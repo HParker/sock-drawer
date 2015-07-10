@@ -1,12 +1,12 @@
 require 'spec_helper'
+require 'logger'
 
 RSpec.describe Sock::Drawer do
-  it "takes a name on initialize" do
-    Sock::Client.new
-    Sock::Client.new('sock-you')
-  end
+  let(:redis) { MockRedis.new }
+  let(:sock) { Sock::Client.new(redis: redis, logger: Logger.new(nil)) }
 
   it "subscribes to events from redis with that name" do
-
+    expect(redis).to receive(:publish).with("sock-hook/new_channel", "hi")
+    sock.pub("hi", postfix: "new_channel")
   end
 end
