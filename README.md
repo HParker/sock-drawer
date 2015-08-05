@@ -1,6 +1,9 @@
 # Sock::Drawer
 
-TODO: Write a gem description
+This gem acts to manage a set of websocket connections between a browser and a server.
+It follows the reactor pattern. Events are fired and the client reads them.
+
+This gem is a work in progress and does not yet have a way to respond to messages from the client.
 
 ## Installation
 
@@ -20,7 +23,40 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Initialize a instance of the sock client
+
+```Ruby
+
+sock = Sock::Client.new(logger: Rails.logger, redis: redis)
+
+
+```
+
+publish an event on a channel
+
+```Ruby
+
+sock.pub("my message", postfix: "my-channel")
+
+```
+
+then in your javascript subscribe to the event
+
+```javascript
+
+var webSocket = new WebSocket("ws://" + location.hostname + ":8081/" + "my-channel");
+
+webSocket.onmessage = function(event) {
+  console.log(event.data);
+}
+
+
+```
+
+And you are good to go!
+
+:shipit:
+
 
 ## Contributing
 
