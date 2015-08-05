@@ -1,14 +1,15 @@
-$:.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
+$LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 
-require "sock/drawer"
+require 'sock/drawer'
 require 'mock_redis'
 
+# mock redis munkey patch to allow pub/sub
 class MockRedis
-  def publish(*args)
+  def publish(*)
     true
   end
 
-  def subscribe(*args)
+  def subscribe(*)
     true
   end
 end
