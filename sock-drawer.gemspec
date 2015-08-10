@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['adamhess1991@gmail.com']
   spec.summary       = 'Super simple websocket manager.'
   spec.description   = 'Provide a really simple interface'\
-                       ' to manage websockets using ruby and event machine.'
+                       'to manage events in ruby and via websockets using ruby and event machine.'
   spec.homepage      = 'http://www.thisisadam.me'
   spec.license       = 'MIT'
 
