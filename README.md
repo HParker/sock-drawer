@@ -3,6 +3,10 @@
 This gem allows message async message calls to subscribed listeners.
 Messages can be fired between ruby objects or to websocket connections.
 
+[![Circle CI](https://circleci.com/gh/HParker/sock-drawer.svg?style=svg)](https://circleci.com/gh/HParker/sock-drawer)
+
+[![Code Climate](https://codeclimate.com/github/HParker/sock-drawer/badges/gpa.svg)](https://codeclimate.com/github/HParker/sock-drawer)
+
 ## Installation
 
 Add this line to your application's Gemfile:
