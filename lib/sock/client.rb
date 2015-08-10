@@ -9,11 +9,13 @@ module Sock
       @redis = redis
     end
 
+    # send a message to all subscribed listeners.
     def pub(msg, postfix: '')
       @logger.info "sending #{msg} on channel: #{channel_name(postfix)}"
       @redis.publish(channel_name(postfix), msg)
     end
 
+    # subscribe to all events fired on a given channel
     def sub(server, channel, &block)
       @logger.info "subscribing to #{channel}"
       server.channel(channel_name(channel)).subscribe { |msg| block.call(msg) }

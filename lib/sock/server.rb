@@ -13,6 +13,7 @@ module Sock
       @mode = mode
     end
 
+    # utility method used to subscribe on the default name and start the socket server
     def start!
       EM.run do
         subscribe(@name)
@@ -20,6 +21,8 @@ module Sock
       end
     end
 
+    # subscribe fires a event on a EM channel whenever a message is fired on a pattern matching
+    # @name (default: "sock-hook/") + '*'
     def subscribe(subscription)
       @logger.info "Subscribing to: #{subscription + '*'}"
       pubsub.psubscribe(subscription + '*') do |chan, msg|
@@ -28,11 +31,18 @@ module Sock
       end
     end
 
+    # channel will find or create a EM channel.
+    # channels can have new events pushed on them or subscribe to events from them.
     def channel(channel_name)
-      @logger.info "creating/finding channel #{channel_name}"
+      @logger.info "creating channel #{channel_name}" unless @channels[channel_name]
       @channels[channel_name] ||= EM::Channel.new
     end
 
+
+    # starts the websocket server
+    # on open this server will find a new channel based on the path
+    # on message it will fire an event to the default 'incoming-hook' channel.
+    # on close, we do nothing. (future direction: would be nice to unsubscribe the websocket event if we know it is the only one listening to that channel)
     def socket_start_listening
       EventMachine::WebSocket.start(@socket_params) do |ws|
         handle_open(ws)

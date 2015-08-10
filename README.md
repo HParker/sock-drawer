@@ -1,9 +1,7 @@
 # Sock::Drawer
 
-This gem acts to manage a set of websocket connections between a browser and a server.
-It follows the reactor pattern. Events are fired and the client reads them.
-
-This gem is a work in progress and does not yet have a way to respond to messages from the client.
+This gem allows message async message calls to subscribed listeners.
+Messages can be fired between ruby objects or to listening websocket connections.
 
 ## Installation
 
@@ -26,37 +24,38 @@ Or install it yourself as:
 Initialize a instance of the sock client
 
 ```Ruby
-
 sock = Sock::Client.new(logger: Rails.logger, redis: redis)
-
-
 ```
 
-publish an event on a channel
+Publish an event on a channel,
 
 ```Ruby
-
 sock.pub("my message", postfix: "my-channel")
-
 ```
 
-then in your javascript subscribe to the event
+Subscribe to events fired from a specific sock server,
+
+```Ruby
+sock.sub(server, "my-channel") do |message|
+  puts message
+end
+```
+
+To capture the event in Javascript use something like,
 
 ```javascript
-
 var webSocket = new WebSocket("ws://" + location.hostname + ":8081/" + "my-channel");
 
 webSocket.onmessage = function(event) {
   console.log(event.data);
 }
-
-
 ```
 
+If you wish to start the sock server in another thread you can use
+
+    $ rake sock:server
+
 And you are good to go!
-
-:shipit:
-
 
 ## Contributing
 
@@ -65,3 +64,8 @@ And you are good to go!
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Running the tests
+
+if you are going to contribute, I hope you run the tests at least once -- hopefully many times.
+to run the tests, you must have redis-server running in the background with default configuration.

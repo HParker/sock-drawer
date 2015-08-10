@@ -13,7 +13,7 @@ RSpec.describe Sock::Drawer do
   end
 
   context '#sub' do
-    let(:server) { Sock::Server.new }
+    let(:server) { Sock::Server.new(logger: Logger.new(nil)) }
     let(:hi_redis) { EM::Hiredis.connect }
 
     it 'can register a callback to be run when a event comes through redis' do
