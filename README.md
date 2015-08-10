@@ -1,7 +1,7 @@
 # Sock::Drawer
 
 This gem allows message async message calls to subscribed listeners.
-Messages can be fired between ruby objects or to listening websocket connections.
+Messages can be fired between ruby objects or to websocket connections.
 
 ## Installation
 
