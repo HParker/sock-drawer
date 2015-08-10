@@ -7,8 +7,8 @@ CodeClimate::TestReporter.start
 
 def event_block
   Timeout::timeout(5) do
+    EM.epoll
     EM.run do
-      EM.epoll
       yield
     end
   end
