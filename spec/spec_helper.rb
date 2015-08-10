@@ -2,6 +2,8 @@ $LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 
 require 'sock/drawer'
 require 'pry'
+require 'codeclimate-test-reporter'
+CodeClimate::TestReporter.start
 
 def event_block
   Timeout::timeout(5) do
