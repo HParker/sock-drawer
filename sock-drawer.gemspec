@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Sock::Drawer::VERSION
   spec.authors       = ['Adam Hess']
   spec.email         = ['adamhess1991@gmail.com']
-  spec.summary       = 'Super simple websocket manager.'
+  spec.summary       = 'Super simple websocket manager. '
   spec.description   = 'Provide a really simple interface '\
                        'to manage events in ruby and via websockets using ruby and event machine.'
   spec.homepage      = 'http://www.thisisadam.me'
