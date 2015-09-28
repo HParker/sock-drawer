@@ -26,6 +26,7 @@ RSpec.describe Sock::Drawer do
         hi_redis.pubsub.subscribe('sock-hook-channels/') { |args|
           complete :listen
           hi_redis.publish('sock-hook/hi', 'hi there').callback {
+            sleep 1
             expect(Foo).to have_received(:bar)
             complete :fire
           }
