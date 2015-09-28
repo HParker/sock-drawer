@@ -40,9 +40,18 @@ sock.pub("my message", postfix: "my-channel")
 Subscribe to events fired from a specific sock server,
 
 ```Ruby
-sock.sub(server, "my-channel") do |message|
+sock.sub("my-channel", 'Class', 'method') do |message|
   puts message
 end
+```
+
+This will call the method `method` on class `Class` passing whatever message
+was published as an argument.
+
+i.e.
+
+```Ruby
+Class.method(message)
 ```
 
 To capture the event in Javascript use something like,

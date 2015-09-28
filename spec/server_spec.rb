@@ -1,7 +1,6 @@
 require 'spec_helper'
 require 'em-websocket-client'
-
-# TODO rename to server spec
+require 'json'
 
 RSpec.describe Sock::Server do
   let(:server) { Sock::Server.new(logger: Logger.new(nil)) }
@@ -44,6 +43,31 @@ RSpec.describe Sock::Server do
           hi_redis.publish('my-sub', 'goodbye').callback {
             expect(server.channels.keys).to eq(['my-sub'])
             complete :fire_2
+          }
+        }
+      end
+    end
+  end
+
+  context '#handle_register' do
+    it 'subscribes to messages on DEFAULT_NAME + -channels and calls the code given' do
+      steps :register, :create, :publish
+      allow(Class).to receive(:new)
+      event_block do
+        server.handle_registers
+        complete :register
+        params = {
+          file: Class.method(:new).source_location.first,
+          class_name: 'Class',
+          method: 'new',
+          channel: 'my-sub'
+        }
+        hi_redis.publish(server.name + '-channels/', params.to_json).callback {
+          expect(server.channels.keys).to eq(['sock-hook-channels/', 'my-sub'])
+          complete :create
+          hi_redis.publish('my-sub', '{}').callback {
+            expect(Class).to have_received(:new)
+            complete :publish
           }
         }
       end

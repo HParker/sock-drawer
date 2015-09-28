@@ -1,3 +1,5 @@
+require 'json'
+
 module Sock
   # server provides a EM process that will manage websocket connections
   class Server
@@ -18,10 +20,11 @@ module Sock
       EM.run do
         subscribe(@name)
         socket_start_listening
+        handle_registers
       end
     end
 
-    # subscribe fires a event on a EM channel whenever a message is fired on a pattern matching
+    # subscribe fires a event on a EM channel whenever a message is fired on a pattern matching `name`.
     # @name (default: "sock-hook/") + '*'
     def subscribe(subscription)
       @logger.info "Subscribing to: #{subscription + '*'}"
@@ -51,7 +54,21 @@ module Sock
       end
     end
 
+    def handle_registers
+      subscribe(@name + '-channels/')
+      channel(@name + '-channels/').subscribe { |msg|
+        message = JSON.parse(msg)
+        puts "registering #{message['channel']} with #{message['class_name']}"
+        require(message['file'])
+        subscribe(message['channel'])
+        channel(message['channel']).subscribe { |msg2|
+          eval("#{message['class_name']}.#{message['method']}('#{msg2}')")
+        }
+      }
+    end
+
     private
+
 
     def handle_open(ws)
       ws.onopen do |handshake|
