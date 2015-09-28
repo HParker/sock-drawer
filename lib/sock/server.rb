@@ -58,7 +58,7 @@ module Sock
       subscribe(@name + '-channels/')
       channel(@name + '-channels/').subscribe { |msg|
         message = JSON.parse(msg)
-        puts "registering #{message['channel']} with #{message['class_name']}"
+        @logger.info "registering: #{message['channel']} with #{message['class_name']}.#{message['method']}"
         require(message['file'])
         subscribe(message['channel'])
         channel(message['channel']).subscribe { |msg2|

@@ -40,9 +40,7 @@ sock.pub("my message", postfix: "my-channel")
 Subscribe to events fired from a specific sock server,
 
 ```Ruby
-sock.sub("my-channel", 'Class', 'method') do |message|
-  puts message
-end
+sock.sub("my-channel", 'Class', 'method')
 ```
 
 This will call the method `method` on class `Class` passing whatever message

@@ -24,7 +24,6 @@ RSpec.describe Sock::Drawer do
       event_block do
         server.handle_registers
         hi_redis.pubsub.subscribe('sock-hook-channels/') { |args|
-          puts args.inspect
           complete :listen
           hi_redis.publish('sock-hook/hi', 'hi there').callback {
             expect(Foo).to have_received(:bar)
