@@ -19,16 +19,18 @@ RSpec.describe Sock::Drawer do
     let(:sock) { Sock::Client.new(redis: hi_redis, logger: Logger.new(nil)) }
 
     it 'can register a callback to be run when a event comes through redis', :focus => true do
-      steps :listen, :fire
+      steps :listen, :fire, :recieve
       allow(Foo).to receive(:bar)
       event_block do
         server.handle_registers
         hi_redis.pubsub.subscribe('sock-hook-channels/') { |args|
           complete :listen
           hi_redis.publish('sock-hook/hi', 'hi there').callback {
-            sleep 1
-            expect(Foo).to have_received(:bar)
             complete :fire
+            hi_redis.pubsub.subscribe('sock-hook/hi').callback {
+              expect(Foo).to have_received(:bar)
+              complete :recieve
+            }
           }
         }
         Foo.new.subscribe_do_bar

@@ -66,9 +66,10 @@ RSpec.describe Sock::Server do
           expect(server.channels.keys).to eq(['sock-hook-channels/', 'my-sub'])
           complete :create
           hi_redis.publish('my-sub', '{}').callback {
-            sleep 1
-            expect(Class).to have_received(:new)
-            complete :publish
+            hi_redis.pubsub.subscribe('my-sub').callback {
+              expect(Class).to have_received(:new)
+              complete :publish
+            }
           }
         }
       end
