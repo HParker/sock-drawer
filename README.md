@@ -97,6 +97,7 @@ Then run it with `rake sock:server`
 Current supported configuration options:
 
 | keyword arg | default |
+| ----------- | ------- |
 | name | 'sock-hook'
 | logger | Logger.new(STDOUT) |
 | socket_params | { host: '0.0.0.0', port: 8020 } |

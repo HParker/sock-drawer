@@ -10,10 +10,6 @@ module Sock
         channels[channel] = block
       end
 
-      def _recieve(channel, message)
-        channels[channel].call(message)
-      end
-
       def channels
         @_channels ||= {}
       end
