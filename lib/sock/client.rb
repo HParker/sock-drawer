@@ -10,9 +10,9 @@ module Sock
     end
 
     # send a message to all subscribed listeners.
-    def pub(msg, postfix: '')
-      @logger.info "sending #{msg} on channel: #{channel_name(postfix)}"
-      @redis.publish(channel_name(postfix), msg)
+    def pub(msg, channel: '')
+      @logger.info "sending #{msg} on channel: #{channel_name(channel)}"
+      @redis.publish(channel_name(channel), msg)
     end
 
     private

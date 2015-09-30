@@ -25,32 +25,27 @@ Or install it yourself as:
 
 ## Usage
 
-Initialize a instance of the sock client
+Initialize a instance of the sock-drawer client
 
 ```Ruby
 sock = Sock::Client.new(logger: Rails.logger, redis: redis)
 ```
 
+### Publishing
+
 Publish an event on a channel,
 
 ```Ruby
-sock.pub("my message", postfix: "my-channel")
+sock.pub("my message", channel: "my-channel")
 ```
 
-Subscribe to events fired from a specific sock server,
+or publish to all channels,
 
 ```Ruby
-sock.sub("my-channel", 'Class', 'method')
+sock.pub("my message")
 ```
 
-This will call the method `method` on class `Class` passing whatever message
-was published as an argument.
-
-i.e.
-
-```Ruby
-Class.method(message)
-```
+### Receiving in Javascript
 
 To capture the event in Javascript use something like,
 
@@ -62,9 +57,56 @@ webSocket.onmessage = function(event) {
 }
 ```
 
-If you wish to start the sock server in another thread you can use
+### Subscribing
 
-    $ rake sock:server
+Create a class to handle redis events like,
+
+```Ruby
+class MyListener
+  include Sock::Subscriber
+
+  on 'echo' do |msg|
+    msg
+  end
+end
+```
+
+Then register your listener with the server
+
+```Ruby
+Sock::Server.new(listener: MockClass)
+```
+
+Whenever an event is fired on the `sock-hook/echo` channel the block will be executed.
+
+
+### Configuration
+
+you can configure your sock server to run as a rake task like,
+
+```Ruby
+namespace :sock do
+  desc 'start the sock-drawer server to manage socket connections'
+  task :server do
+    Sock::Server.new.start!
+  end
+end
+```
+
+Then run it with `rake sock:server`
+Current supported configuration options:
+
+| keyword arg | default |
+| name | 'sock-hook'
+| logger | Logger.new(STDOUT) |
+| socket_params | { host: '0.0.0.0', port: 8020 } |
+| mode | 'default' |
+| listener | N/A |
+
+## Wish List
+
+- Right now all configuration is passed into new, it would be nice to read from a config file
+- There isn't a way of having multiple event handlers. Should be easy to pass multiple in or intelligently find them (given some convention)
 
 And you are good to go!
 

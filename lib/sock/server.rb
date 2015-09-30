@@ -59,7 +59,6 @@ module Sock
       @listener.channels.each do |chan, block|
         subscribe(@name + '/' + chan)
         channel(@name + '/' + chan).subscribe { |msg|
-          puts "calling block!!!"
           block.call(msg)
         }
       end

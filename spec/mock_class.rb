@@ -10,7 +10,6 @@ class MockClass
   end
 
   on 'test' do |msg|
-    puts "we did it"
     test_method
   end
 
