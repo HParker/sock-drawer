@@ -5,6 +5,7 @@ require 'redis'
 require 'logger'
 require 'sock/client'
 require 'sock/server'
+require 'sock/subscriber'
 
 # Sock is the top level module for sock objects
 module Sock

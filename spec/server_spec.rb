@@ -49,28 +49,21 @@ RSpec.describe Sock::Server do
     end
   end
 
-  context '#handle_register' do
-    it 'subscribes to messages on DEFAULT_NAME + -channels and calls the code given' do
-      steps :register, :create, :publish
-      allow(Class).to receive(:new)
+  context 'listener' do
+    let(:server) {
+      Sock::Server.new(logger: Logger.new(nil), listener: MockClass)
+    }
+    it 'will fire a ruby event when a server event comes in' do
+      allow(MockClass).to receive(:test_method)
+      steps :fire
       event_block do
-        server.handle_registers
-        complete :register
-        params = {
-          file: Class.method(:new).source_location.first,
-          class_name: 'Class',
-          method: 'new',
-          channel: 'my-sub'
-        }
-        hi_redis.publish(server.name + '-channels/', params.to_json).callback {
-          expect(server.channels.keys).to eq(['sock-hook-channels/', 'my-sub'])
-          complete :create
-          hi_redis.publish('my-sub', '{}').callback {
-            hi_redis.pubsub.subscribe('my-sub').callback {
-              expect(Class).to have_received(:new)
-              complete :publish
-            }
-          }
+        server.register!
+        hi_redis.publish('sock-hook/test', 'success').callback {
+          expect(server.channels.keys).to eq(['sock-hook/hi',
+                                              'sock-hook/echo',
+                                              'sock-hook/test'])
+          expect(MockClass).to have_received(:test_method)
+          complete :fire
         }
       end
     end

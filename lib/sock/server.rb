@@ -7,20 +7,22 @@ module Sock
     def initialize(name: DEFAULT_NAME,
                    logger: Logger.new(STDOUT),
                    socket_params: { host: HOST, port: PORT },
-                   mode: 'default')
+                   mode: 'default',
+                   listener: nil)
       @name = name
       @socket_params = socket_params
       @channels = {}
       @logger = logger
       @mode = mode
+      @listener = listener
     end
 
     # utility method used to subscribe on the default name and start the socket server
     def start!
       EM.run do
+        register!
         subscribe(@name)
         socket_start_listening
-        handle_registers
       end
     end
 
@@ -41,7 +43,6 @@ module Sock
       @channels[channel_name] ||= EM::Channel.new
     end
 
-
     # starts the websocket server
     # on open this server will find a new channel based on the path
     # on message it will fire an event to the default 'incoming-hook' channel.
@@ -54,21 +55,17 @@ module Sock
       end
     end
 
-    def handle_registers
-      subscribe(@name + '-channels/')
-      channel(@name + '-channels/').subscribe { |msg|
-        message = JSON.parse(msg)
-        @logger.info "registering: #{message['channel']} with #{message['class_name']}.#{message['method']}"
-        require(message['file'])
-        subscribe(message['channel'])
-        channel(message['channel']).subscribe { |msg2|
-          eval("#{message['class_name']}.#{message['method']}('#{msg2}')")
+    def register!
+      @listener.channels.each do |chan, block|
+        subscribe(@name + '/' + chan)
+        channel(@name + '/' + chan).subscribe { |msg|
+          puts "calling block!!!"
+          block.call(msg)
         }
-      }
+      end
     end
 
     private
-
 
     def handle_open(ws)
       ws.onopen do |handshake|

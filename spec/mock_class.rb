@@ -1,9 +1,18 @@
-class Foo
-  def self.bar(string)
-    puts string
+class MockClass
+  include Sock::Subscriber
+
+  on 'hi' do
+    'success'
   end
 
-  def subscribe_do_bar
-    Sock::Client.new(redis: EM::Hiredis.connect).sub('hi', 'Foo', 'bar')
+  on 'echo' do |msg|
+    msg
   end
+
+  on 'test' do |msg|
+    puts "we did it"
+    test_method
+  end
+
+  def self.test_method; end
 end
