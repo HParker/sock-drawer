@@ -20,7 +20,7 @@ module Sock
     # utility method used to subscribe on the default name and start the socket server
     def start!
       EM.run do
-        register!
+        register! if @listener
         subscribe(@name)
         socket_start_listening
       end
@@ -51,7 +51,6 @@ module Sock
       EventMachine::WebSocket.start(@socket_params) do |ws|
         handle_open(ws)
         handle_message(ws)
-        handle_close(ws)
       end
     end
 
@@ -69,7 +68,8 @@ module Sock
     def handle_open(ws)
       ws.onopen do |handshake|
         @logger.info "sock opened on #{handshake.path}"
-        channel(@name + handshake.path).subscribe { |msg| ws.send(msg) }
+        sid = channel(@name + handshake.path).subscribe { |msg| ws.send(msg) }
+        handle_close(ws, sid, handshake)
       end
     end
 
@@ -77,11 +77,11 @@ module Sock
       ws.onmessage { |msg| channel('incoming-hook').push(msg) }
     end
 
-    def handle_close(ws)
+    def handle_close(ws, sid, handshake)
       # TODO: how can I know the sid to remove this subscription?
       ws.onclose {
-        @logger.info "connection closed"
-        # channel(@name + handshake.path).unsubscribe(sid)
+        @logger.info "connection #{sid} closed"
+        channel(@name + handshake.path).unsubscribe(sid)
       }
     end
 

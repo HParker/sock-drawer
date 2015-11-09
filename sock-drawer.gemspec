@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Super simple websocket manager. '
   spec.description   = 'Provide a really simple interface '\
                        'to manage events in ruby and via websockets using ruby and event machine.'
-  spec.homepage      = 'http://www.thisisadam.me'
+  spec.homepage      = 'https://github.com/HParker/sock-drawer'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")

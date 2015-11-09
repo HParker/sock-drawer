@@ -74,7 +74,7 @@ end
 Then register your listener with the server
 
 ```Ruby
-Sock::Server.new(listener: MockClass)
+Sock::Server.new(listener: MyClass)
 ```
 
 Whenever an event is fired on the `sock-hook/echo` channel the block will be executed.
@@ -98,7 +98,7 @@ Current supported configuration options:
 
 | keyword arg | default |
 | ----------- | ------- |
-| name | 'sock-hook'
+| name | 'sock-hook' |
 | logger | Logger.new(STDOUT) |
 | socket_params | { host: '0.0.0.0', port: 8020 } |
 | mode | 'default' |

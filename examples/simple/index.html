@@ -1,0 +1,28 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Simple socket example</title>
+  <meta name="description" content="Simple socket example">
+  <meta name="author" content="HParker">
+</head>
+
+<body>
+  <h1>chat</h1>
+  <ul id="chat">
+    <li>chat begins under here</li>
+  </ul>
+
+  <script type="text/javascript">
+    var webSocket = new WebSocket("ws://localhost:8020/my-channel");
+
+    webSocket.onmessage = function(event) {
+      var li = document.createElement("li");
+      li.innerText = event.data;
+      var chat = document.getElementById("chat");
+      chat.appendChild(li);
+    }
+  </script>
+</body>
+</html>
