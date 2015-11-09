@@ -78,7 +78,6 @@ module Sock
     end
 
     def handle_close(ws, sid, handshake)
-      # TODO: how can I know the sid to remove this subscription?
       ws.onclose {
         @logger.info "connection #{sid} closed"
         channel(@name + handshake.path).unsubscribe(sid)

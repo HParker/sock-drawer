@@ -74,7 +74,7 @@ end
 Then register your listener with the server
 
 ```Ruby
-Sock::Server.new(listener: MyClass)
+Sock::Server.new(listener: MyListener)
 ```
 
 Whenever an event is fired on the `sock-hook/echo` channel the block will be executed.
