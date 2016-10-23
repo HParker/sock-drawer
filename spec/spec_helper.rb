@@ -1,11 +1,13 @@
 $LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
 
 require 'sock/drawer'
-require 'pry'
 require 'codeclimate-test-reporter'
 require 'simplecov'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[SimpleCov::Formatter::HTMLFormatter, CodeClimate::TestReporter::Formatter]
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  CodeClimate::TestReporter::Formatter
+]
 
 dir = File.join("..", "coverage")
 SimpleCov.coverage_dir(dir)
