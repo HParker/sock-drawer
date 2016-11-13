@@ -15,3 +15,5 @@ task :spec do
   rescue LoadError
   end
 end
+
+task default: :spec
